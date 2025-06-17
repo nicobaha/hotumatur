@@ -44,6 +44,7 @@ if (woodmart_get_opt('update_cart_quantity_change')) {
 					<th class="product-thumbnail"><span class="screen-reader-text"><?php esc_html_e('Thumbnail image', 'woocommerce'); ?></span></th>
 					<th class="product-name"><?php esc_html_e('Product', 'woocommerce'); ?></th>
 					<th class="product-price"><?php esc_html_e('Price', 'woocommerce'); ?></th>
+					<th class="product-unit-price"><?php esc_html_e('Precio por persona', 'woocommerce'); ?></th>
 					<th class="product-quantity"><?php esc_html_e('Quantity', 'woocommerce'); ?></th>
 					<th class="product-subtotal"><?php esc_html_e('Subtotal', 'woocommerce'); ?></th>
 				</tr>
@@ -109,6 +110,17 @@ if (woodmart_get_opt('update_cart_quantity_change')) {
 								// Meta data
 								echo wc_get_formatted_cart_item_data($cart_item);
 
+								?>
+								<?php
+								$personas = 1;
+								$personas_encontradas = wc_get_formatted_cart_item_data($cart_item, false);
+								if (preg_match('/Personas:\s*(\d+)/', strip_tags($personas_encontradas), $matches)) {
+									$personas = max(1, intval($matches[1]));
+								}
+								$precio_por_persona = $cart_item['line_total'] / $personas;
+								?>
+								<?php
+
 								// Backorder notification
 								if ($_product->backorders_require_notification() && $_product->is_on_backorder($cart_item['quantity'])) {
 									echo wp_kses_post(apply_filters('woocommerce_cart_item_backorder_notification', '<p class="backorder_notification">' . esc_html__('Available on backorder', 'woocommerce') . '</p>', $product_id));
@@ -120,6 +132,10 @@ if (woodmart_get_opt('update_cart_quantity_change')) {
 								<?php
 								echo apply_filters('woocommerce_cart_item_price', WC()->cart->get_product_price($_product), $cart_item, $cart_item_key);
 								?>
+							</td>
+
+							<td class="product-unit-price" data-title="<?php esc_attr_e('Precio por persona', 'woocommerce'); ?>">
+								<?php echo wc_price($precio_por_persona); ?>
 							</td>
 
 							<td class="product-quantity" data-title="<?php esc_attr_e('Quantity', 'woocommerce'); ?>">
@@ -152,6 +168,8 @@ if (woodmart_get_opt('update_cart_quantity_change')) {
 								<?php
 								echo apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key);
 								?>
+								<br>
+								<small><?php echo sprintf(esc_html__('(%s por persona)', 'woocommerce'), wc_price($precio_por_persona)); ?></small>
 							</td>
 						</tr>
 
