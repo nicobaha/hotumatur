@@ -43,7 +43,7 @@ if (woodmart_get_opt('update_cart_quantity_change')) {
 					<th class="product-remove"><span class="screen-reader-text"><?php esc_html_e('Remove item', 'woocommerce'); ?></span></th>
 					<th class="product-thumbnail"><span class="screen-reader-text"><?php esc_html_e('Thumbnail image', 'woocommerce'); ?></span></th>
 					<th class="product-name"><?php esc_html_e('Product', 'woocommerce'); ?></th>
-					<th class="product-price"><?php esc_html_e('Price', 'woocommerce'); ?></th>
+
 					<th class="product-unit-price"><?php esc_html_e('Precio por persona', 'woocommerce'); ?></th>
 					<th class="product-quantity"><?php esc_html_e('Quantity', 'woocommerce'); ?></th>
 					<th class="product-subtotal"><?php esc_html_e('Subtotal', 'woocommerce'); ?></th>
@@ -128,11 +128,7 @@ if (woodmart_get_opt('update_cart_quantity_change')) {
 								?>
 							</td>
 
-							<td class="product-price" data-title="<?php esc_attr_e('Price', 'woocommerce'); ?>">
-								<?php
-								echo apply_filters('woocommerce_cart_item_price', WC()->cart->get_product_price($_product), $cart_item, $cart_item_key);
-								?>
-							</td>
+
 
 							<td class="product-unit-price" data-title="<?php esc_attr_e('Precio por persona', 'woocommerce'); ?>">
 								<?php echo wc_price($precio_por_persona); ?>
