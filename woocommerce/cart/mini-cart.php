@@ -101,23 +101,24 @@ do_action('woocommerce_before_mini_cart'); ?>
                                 <?php endif; ?>
                                 <?php
                                 echo wc_get_formatted_cart_item_data($cart_item);
-                                ?>
 
-                                <?php
-                                if (! $_product->is_sold_individually() && $_product->is_purchasable() && woodmart_get_opt('mini_cart_quantity') && apply_filters('woodmart_show_widget_cart_item_quantity', true, $cart_item_key)) {
-                                    woocommerce_quantity_input(
-                                        array(
-                                            'input_value' => $cart_item['quantity'],
-                                            'input_name'  => "cart[{$cart_item_key}][qty]",
-                                            'min_value'   => 0,
-                                            'max_value'   => $_product->backorders_allowed() ? '' : $_product->get_stock_quantity(),
-                                        ),
-                                        $_product
-                                    );
+                                // Calcular precio por persona como en el carrito principal:
+                                $personas = 1;
+                                $personas_encontradas = wc_get_formatted_cart_item_data($cart_item, false);
+                                if (preg_match('/Personas:\s*(\d+)/', strip_tags($personas_encontradas), $matches)) {
+                                    $personas = max(1, intval($matches[1]));
                                 }
-                                ?>
+                                if (!empty($cart_item['line_total'])) {
+                                    $precio_por_persona = $cart_item['line_total'] / $personas;
+                                    echo '<div class="wd-product-detail">';
+                                    echo '<span class="wd-label">' . esc_html__('Precio por persona', 'woocommerce') . '</span>: ';
+                                    echo wc_price($precio_por_persona);
+                                    echo '</div>';
+                                }
 
-                                <?php echo apply_filters('woocommerce_widget_cart_item_quantity', '<span class="quantity">' . sprintf('%s &times; %s', $cart_item['quantity'], $product_price) . '</span>', $cart_item, $cart_item_key); ?>
+                                // Mostrar total
+                                echo apply_filters('woocommerce_widget_cart_item_quantity', '<span class="quantity">' . sprintf('%s &times; %s', $cart_item['quantity'], $product_price) . '</span>', $cart_item, $cart_item_key);
+                                ?>
                             </div>
 
                         </li>
